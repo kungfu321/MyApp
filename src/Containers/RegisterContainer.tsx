@@ -9,6 +9,7 @@ import { navigateAndSimpleReset, navigateGoBack } from '@/Navigators/utils'
 import { setCredentials } from '@/Store/Auth'
 import { Input, GradientButton } from '@/Components'
 import { Colors } from '@/Theme/Variables'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const RegisterContainer = () => {
   const { Fonts, Gutters, Layout, Common } = useTheme()
@@ -27,10 +28,13 @@ const RegisterContainer = () => {
   const handleRegister = async () => {
     try {
       const user = await register(formState).unwrap()
+      if (user?.token) {
+        await AsyncStorage.setItem('token', user.token)
+        await AsyncStorage.setItem('userId', `${user.user.id}`)
+      }
       dispatch(setCredentials(user))
       navigateAndSimpleReset('Candidate')
     } catch (error: any) {
-      setFormState(initialState)
       Alert.alert('Error', error.data.message)
     }
   }

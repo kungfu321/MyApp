@@ -6,16 +6,20 @@ import {
   ImageBackground,
   TouchableOpacity,
   ActivityIndicator,
+  Alert,
 } from 'react-native'
 import { useTheme } from '@/Hooks'
 import { TopBar, GradientButton } from '@/Components'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { Colors } from '@/Theme/Variables'
-
+import { useSelector } from 'react-redux'
 import LinearGradient from 'react-native-linear-gradient'
-import { navigate } from '@/Navigators/utils'
+import { navigate, navigateAndSimpleReset } from '@/Navigators/utils'
 import { useLazyFetchOneQuery } from '@/Services/modules/users'
+import { AuthState } from '@/Store/Auth'
+import { User } from '@/Services/modules/users/fetchOne'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 interface CandidateContainerProps {
   userId: string
@@ -28,10 +32,24 @@ const CandidateContainer = ({ userId }: CandidateContainerProps) => {
   const handleMoveToUserProfile = () => {
     navigate('UserProfile', { data })
   }
+  const currentUser = useSelector(
+    (state: { auth: AuthState }) => state.auth.user,
+  ) as unknown as User
+  const userIdFromState = currentUser?.id
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.clear()
+      Alert.alert('Logout')
+      navigateAndSimpleReset('Login')
+    } catch (error) {
+      Alert.alert('Error')
+    }
+  }
 
   useEffect(() => {
-    fetchOne(userId)
-  }, [fetchOne, userId])
+    fetchOne(userId ?? userIdFromState)
+  }, [fetchOne, userId, userIdFromState])
 
   if (!isSuccess) {
     return null
@@ -43,11 +61,11 @@ const CandidateContainer = ({ userId }: CandidateContainerProps) => {
       <ImageBackground
         style={[Layout.fill]}
         source={{
-          uri: data?.thumbnail ?? 'https://picsum.photos/200',
+          uri: data?.thumbnail,
         }}
         resizeMode="cover"
       >
-        <TopBar title="Candidates" />
+        <TopBar title="Candidates" onPress={handleLogout} />
         <LinearGradient
           colors={[Colors.transparent, Colors.gray]}
           style={[
@@ -84,7 +102,6 @@ const CandidateContainer = ({ userId }: CandidateContainerProps) => {
                   color={Colors.white}
                 />
               }
-              onPress={() => {}}
             />
             <GradientButton
               containerStyle={[Gutters.smallRMargin, { width: 60 }]}
@@ -103,7 +120,6 @@ const CandidateContainer = ({ userId }: CandidateContainerProps) => {
                   color={Colors.gray}
                 />
               }
-              onPress={() => {}}
             />
           </View>
           <View
@@ -128,8 +144,3 @@ const CandidateContainer = ({ userId }: CandidateContainerProps) => {
 }
 
 export default CandidateContainer
-
-CandidateContainer.defaultProps = {
-  // eslint-disable-next-line react/default-props-match-prop-types
-  userId: '62de0cba3e62fd72c381815e',
-}

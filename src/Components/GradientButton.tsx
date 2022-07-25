@@ -5,7 +5,7 @@ import LinearGradient from 'react-native-linear-gradient'
 import { Colors } from '@/Theme/Variables'
 
 interface GradientButtonProps {
-  onPress: () => void
+  onPress?: () => void
   text?: string
   icon?: any
   containerStyle?: ViewStyle | ViewStyle[]
@@ -70,4 +70,5 @@ GradientButton.defaultProps = {
   icon: null,
   // eslint-disable-next-line react/default-props-match-prop-types
   linearGradientColors: [Colors.bluberry, Colors.turquoiseBlue],
+  onPress: () => {},
 }

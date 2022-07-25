@@ -19,4 +19,5 @@ export type User = {
     state: string
   }
   bio: string
+  photos: string[]
 }

@@ -7,10 +7,19 @@ import { navigateGoBack } from '@/Navigators/utils'
 
 interface TopBarProps {
   title: string
+  onPress?: () => Promise<void>
 }
 
-const TopBar = ({ title }: TopBarProps) => {
+const TopBar = ({ title, onPress }: TopBarProps) => {
   const { Layout, Gutters, Fonts, Common } = useTheme()
+
+  const handleBack = () => {
+    if (onPress) {
+      onPress()
+    } else {
+      navigateGoBack()
+    }
+  }
 
   return (
     <View
@@ -22,7 +31,7 @@ const TopBar = ({ title }: TopBarProps) => {
         Gutters.smallTMargin,
       ]}
     >
-      <TouchableOpacity onPress={() => navigateGoBack()}>
+      <TouchableOpacity onPress={handleBack}>
         <MaterialIcons
           name="keyboard-arrow-left"
           size={36}
@@ -38,3 +47,7 @@ const TopBar = ({ title }: TopBarProps) => {
 }
 
 export default TopBar
+
+TopBar.defaultProps = {
+  onPress: undefined,
+}

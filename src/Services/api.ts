@@ -7,11 +7,19 @@ import {
   FetchBaseQueryError,
 } from '@reduxjs/toolkit/query/react'
 import { RootState } from '../Store'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const baseQuery = fetchBaseQuery({
   baseUrl: Config.API_URL,
-  prepareHeaders: (headers, { getState }) => {
-    const token = (getState() as RootState).auth.token
+  prepareHeaders: async (headers, { getState }) => {
+    let token = (getState() as RootState).auth.token
+    if (!token) {
+      try {
+        token = await AsyncStorage.getItem('token')
+      } catch (error) {
+        // nothing here
+      }
+    }
     if (token) {
       headers.set('authorization', `Bearer ${token}`)
     }

@@ -14,18 +14,6 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { Colors } from '@/Theme/Variables'
 import { navigateGoBack } from '@/Navigators/utils'
-import { User } from '@/Services/modules/users/fetchOne'
-
-const hoppies = [
-  'design',
-  'dogs',
-  'travel',
-  'music',
-  'books',
-  'movies',
-  'food',
-  'games',
-]
 
 interface UserProfileContainerProps {
   route: any
@@ -34,14 +22,13 @@ interface UserProfileContainerProps {
 const UserProfileContainer = ({ route }: UserProfileContainerProps) => {
   const { Layout, Common, Fonts, Gutters } = useTheme()
   const { data } = route.params
-  console.log('data', data)
 
   return (
     <View style={[Layout.fill, Common.backgroundWhite]}>
       <ImageBackground
         style={[{ height: 250, position: 'relative' }]}
         source={{
-          uri: data?.thumbnail ?? 'https://picsum.photos/200',
+          uri: data?.thumbnail,
         }}
         resizeMode="cover"
       >
@@ -65,7 +52,7 @@ const UserProfileContainer = ({ route }: UserProfileContainerProps) => {
           </View>
         </View>
 
-        <View style={[Layout.row, { width: '100%', left: '100%' }]}>
+        <View style={[Layout.row, { width: '100%', left: '100%', top: 22 }]}>
           <GradientButton
             containerStyle={[Gutters.smallRMargin, { width: 60 }]}
             linearGradientStyle={{ width: 60, height: 60, borderRadius: 60 }}
@@ -76,7 +63,6 @@ const UserProfileContainer = ({ route }: UserProfileContainerProps) => {
                 color={Colors.white}
               />
             }
-            onPress={() => { }}
           />
           <GradientButton
             linearGradientStyle={{
@@ -94,7 +80,6 @@ const UserProfileContainer = ({ route }: UserProfileContainerProps) => {
                 color={Colors.gray}
               />
             }
-            onPress={() => { }}
           />
         </View>
       </ImageBackground>
@@ -114,9 +99,7 @@ const UserProfileContainer = ({ route }: UserProfileContainerProps) => {
         </View>
         <Text style={[Fonts.fontWeight600, Fonts.textSmall]}>About</Text>
         <Text style={[Common.colorgray, Gutters.smallTMargin]}>
-          I like my profession and I am going to do my best to become a good
-          specialist. I like my profession and I am going to do my best to
-          become a good specialist.
+          {data?.bio}
         </Text>
         <Text
           style={[Fonts.fontWeight600, Fonts.textSmall, Gutters.largeTMargin]}
@@ -124,7 +107,7 @@ const UserProfileContainer = ({ route }: UserProfileContainerProps) => {
           WHAT I LIKE
         </Text>
         <View style={[Gutters.smallTMargin, Layout.row, Common.flexWrap]}>
-          {hoppies.map((hoppy, index) => (
+          {data?.hoppies?.map((hoppy: string, index: number) => (
             <Text
               style={[
                 Common.colorgray,
@@ -154,17 +137,20 @@ const UserProfileContainer = ({ route }: UserProfileContainerProps) => {
               Gutters.smallBMargin,
             ]}
           >
-            MY PHOTO <Text style={[Common.colorgray]}>(8)</Text>
+            MY PHOTO{' '}
+            <Text style={[Common.colorgray]}>
+              ({data?.photos?.length ?? 0})
+            </Text>
           </Text>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((item, i) => (
+            {data?.photos?.map((item: string, i: number) => (
               <Image
                 key={i}
                 style={[
                   { width: 70, height: 70, marginRight: 10, borderRadius: 70 },
                 ]}
                 source={{
-                  uri: 'https://images.unsplash.com/photo-1568409226229-ae13c034d136?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=654&q=80',
+                  uri: item,
                 }}
               />
             ))}
@@ -178,13 +164,17 @@ const UserProfileContainer = ({ route }: UserProfileContainerProps) => {
             Gutters.smallBMargin,
           ]}
         >
-          LAST WTEETS
+          LAST TWEETS
         </Text>
-        <Text style={[Common.colorgray]}>
-          I like my profession and I am going to do my best to become a good
-          specialist. I like my profession and I am going to do my best to
-          become a good specialist.
-        </Text>
+        {data?.tweets?.length ? (
+          data?.tweets?.map((item: string, i: number) => (
+            <Text style={[Common.colorgray]} key={i}>
+              {item}
+            </Text>
+          ))
+        ) : (
+          <Text style={[Common.colorgray]}>No tweets yet</Text>
+        )}
       </ScrollView>
     </View>
   )

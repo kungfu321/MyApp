@@ -1,5 +1,5 @@
 export default {
-  welcome: 'Welcome to React Native MyApp by TheCodingMachine',
+  welcome: 'Welcome to My App',
   actions: {
     continue: 'Continue',
   },

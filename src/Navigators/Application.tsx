@@ -10,7 +10,6 @@ import {
   UserProfileContainer,
 } from '@/Containers'
 import { useTheme } from '@/Hooks'
-import MainNavigator from './Main'
 import { navigationRef } from './utils'
 
 const Stack = createStackNavigator()
@@ -30,13 +29,6 @@ const ApplicationNavigator = () => {
           <Stack.Screen name="Register" component={RegisterContainer} />
           <Stack.Screen name="Candidate" component={CandidateContainer} />
           <Stack.Screen name="UserProfile" component={UserProfileContainer} />
-          <Stack.Screen
-            name="Main"
-            component={MainNavigator}
-            options={{
-              animationEnabled: false,
-            }}
-          />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaView>

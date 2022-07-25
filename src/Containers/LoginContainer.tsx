@@ -10,6 +10,7 @@ import { setCredentials } from '@/Store/Auth'
 import Fontisto from 'react-native-vector-icons/Fontisto'
 import { Input, GradientButton } from '@/Components'
 import { Colors } from '@/Theme/Variables'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const LoginContainer = () => {
   const { Fonts, Gutters, Layout, Common } = useTheme()
@@ -26,6 +27,10 @@ const LoginContainer = () => {
   const handleLogin = async () => {
     try {
       const user = await login(formState).unwrap()
+      if (user?.token) {
+        await AsyncStorage.setItem('token', user.token)
+        await AsyncStorage.setItem('userId', `${user.user.id}`)
+      }
       dispatch(setCredentials(user))
       navigateAndSimpleReset('Candidate')
     } catch (error: any) {
