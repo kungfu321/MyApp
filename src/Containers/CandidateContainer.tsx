@@ -41,7 +41,7 @@ const CandidateContainer = ({ userId }: CandidateContainerProps) => {
     try {
       await AsyncStorage.clear()
       Alert.alert('Logout')
-      navigateAndSimpleReset('Login')
+      navigateAndSimpleReset('Auth')
     } catch (error) {
       Alert.alert('Error')
     }
