@@ -27,6 +27,7 @@ export const Colors = {
   lightGray: '#D7D8DC',
   gray: '#8C8D92',
   gunmetan: '#595A5B',
+  uglyBlue: '#376380',
 }
 
 export const NavigationColors = {

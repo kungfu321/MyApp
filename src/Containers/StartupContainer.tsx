@@ -31,7 +31,7 @@ const StartupContainer = () => {
       // nothing here
     }
     await setDefaultTheme({ theme: 'default', darkMode: null })
-    navigateAndSimpleReset('Login')
+    navigateAndSimpleReset('Auth')
   }
 
   useEffect(() => {
