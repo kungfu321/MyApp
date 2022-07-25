@@ -4,7 +4,7 @@ import { User } from '../users/fetchOne'
 export default (build: EndpointBuilder<any, any, any>) =>
   build.mutation<UserResponse, RegisterRequest>({
     query: credentials => ({
-      url: 'login',
+      url: 'v1//auth/register',
       method: 'POST',
       body: credentials,
     }),

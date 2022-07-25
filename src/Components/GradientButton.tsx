@@ -9,7 +9,7 @@ interface GradientButtonProps {
   text?: string
   icon?: any
   containerStyle?: ViewStyle | ViewStyle[]
-  linearGradientStyle?: ViewStyle
+  linearGradientStyle?: ViewStyle | ViewStyle[]
   textStyle?: ViewStyle
   linearGradientColors: (string | number)[]
 }

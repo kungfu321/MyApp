@@ -1,11 +1,11 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useState } from 'react'
-import { View, Text, ScrollView } from 'react-native'
+import { View, Text, ScrollView, Alert } from 'react-native'
 import { useDispatch } from 'react-redux'
 import { useTheme } from '@/Hooks'
 import { useLoginMutation } from '@/Services/modules/auth'
 import type { LoginRequest } from '@/Services/modules/auth/login'
-import { navigateAndSimpleReset } from '@/Navigators/utils'
+import { navigateAndSimpleReset, navigate } from '@/Navigators/utils'
 import { setCredentials } from '@/Store/Auth'
 import Fontisto from 'react-native-vector-icons/Fontisto'
 import { Input, GradientButton } from '@/Components'
@@ -14,10 +14,12 @@ import { Colors } from '@/Theme/Variables'
 const LoginContainer = () => {
   const { Fonts, Gutters, Layout, Common } = useTheme()
   const dispatch = useDispatch()
-  const [formState, setFormState] = useState<LoginRequest>({
+  const initialState = {
     email: '',
     password: '',
-  })
+  }
+
+  const [formState, setFormState] = useState<LoginRequest>(initialState)
 
   const [login, { isLoading }] = useLoginMutation()
 
@@ -25,9 +27,10 @@ const LoginContainer = () => {
     try {
       const user = await login(formState).unwrap()
       dispatch(setCredentials(user))
-      navigateAndSimpleReset('Main')
-    } catch (error) {
-      console.log('error', error)
+      navigateAndSimpleReset('Candidate')
+    } catch (error: any) {
+      setFormState(initialState)
+      Alert.alert('Error', error?.data?.message || error)
     }
   }
 
@@ -35,7 +38,7 @@ const LoginContainer = () => {
     setFormState((prev: typeof formState) => ({ ...prev, [name]: value }))
 
   const handleMoveToRegister = () => {
-    navigateAndSimpleReset('Register')
+    navigate('Register', {})
   }
 
   return (
@@ -66,7 +69,12 @@ const LoginContainer = () => {
             value={formState.password}
             containerStyle={Gutters.largeTMargin}
           />
-          <GradientButton onPress={handleLogin} text="SIGN IN" />
+          <GradientButton
+            onPress={handleLogin}
+            text="SIGN IN"
+            linearGradientStyle={[Gutters.regularVPadding]}
+            containerStyle={[Gutters.regularTMargin, Gutters.largeBMargin]}
+          />
 
           <View style={[Layout.row]}>
             <View

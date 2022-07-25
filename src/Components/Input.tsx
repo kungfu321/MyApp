@@ -47,6 +47,8 @@ const Input = ({
         <TextInput
           onFocus={handleFocus}
           onBlur={handleBlur}
+          autoCapitalize="none"
+          autoCorrect={false}
           style={[
             Common.textInput,
             Layout.fill,

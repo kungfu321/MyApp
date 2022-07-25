@@ -14,6 +14,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { Colors } from '@/Theme/Variables'
 import { navigateGoBack } from '@/Navigators/utils'
+import { User } from '@/Services/modules/users/fetchOne'
 
 const hoppies = [
   'design',
@@ -26,15 +27,21 @@ const hoppies = [
   'games',
 ]
 
-const UserProfileContainer = () => {
+interface UserProfileContainerProps {
+  route: any
+}
+
+const UserProfileContainer = ({ route }: UserProfileContainerProps) => {
   const { Layout, Common, Fonts, Gutters } = useTheme()
+  const { data } = route.params
+  console.log('data', data)
 
   return (
     <View style={[Layout.fill, Common.backgroundWhite]}>
       <ImageBackground
         style={[{ height: 250, position: 'relative' }]}
         source={{
-          uri: 'https://images.unsplash.com/photo-1568409226229-ae13c034d136?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=654&q=80',
+          uri: data?.thumbnail ?? 'https://picsum.photos/200',
         }}
         resizeMode="cover"
       >
@@ -44,7 +51,7 @@ const UserProfileContainer = () => {
           <Text
             style={[Fonts.titleSmall, Common.colorwhite, Fonts.fontWeight500]}
           >
-            Helena Smith
+            {data?.name}
           </Text>
           <View
             style={[Layout.row, Layout.alignItemsCenter, Gutters.tinyTMargin]}
@@ -53,7 +60,7 @@ const UserProfileContainer = () => {
             <Text
               style={[Fonts.fontWeight600, Fonts.textSmall, Common.colorwhite]}
             >
-              28, Lisbon, Portugal
+              {`${data?.address?.street}, ${data?.address?.state}, ${data?.address?.city}`}
             </Text>
           </View>
         </View>
@@ -69,7 +76,7 @@ const UserProfileContainer = () => {
                 color={Colors.white}
               />
             }
-            onPress={() => {}}
+            onPress={() => { }}
           />
           <GradientButton
             linearGradientStyle={{
@@ -87,7 +94,7 @@ const UserProfileContainer = () => {
                 color={Colors.gray}
               />
             }
-            onPress={() => {}}
+            onPress={() => { }}
           />
         </View>
       </ImageBackground>

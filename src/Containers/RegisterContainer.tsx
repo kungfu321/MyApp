@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useState } from 'react'
-import { View, Text, ScrollView } from 'react-native'
+import { View, Text, ScrollView, Alert } from 'react-native'
 import { useDispatch } from 'react-redux'
 import { useTheme } from '@/Hooks'
 import { useRegisterMutation } from '@/Services/modules/auth'
@@ -13,12 +13,14 @@ import { Colors } from '@/Theme/Variables'
 const RegisterContainer = () => {
   const { Fonts, Gutters, Layout, Common } = useTheme()
   const dispatch = useDispatch()
-  const [formState, setFormState] = useState<RegisterRequest>({
+  const initialState = {
     email: '',
     password: '',
     username: '',
     age: '',
-  })
+  }
+
+  const [formState, setFormState] = useState<RegisterRequest>(initialState)
 
   const [register, { isLoading }] = useRegisterMutation()
 
@@ -26,9 +28,10 @@ const RegisterContainer = () => {
     try {
       const user = await register(formState).unwrap()
       dispatch(setCredentials(user))
-      navigateAndSimpleReset('Main')
-    } catch (error) {
-      console.log('error', error)
+      navigateAndSimpleReset('Candidate')
+    } catch (error: any) {
+      setFormState(initialState)
+      Alert.alert('Error', error.data.message)
     }
   }
 
@@ -109,7 +112,12 @@ const RegisterContainer = () => {
             labelStyle={Common.colorslateGray}
             inputStyle={[Common.colorgray, Common.backgroundTungsten]}
           />
-          <GradientButton onPress={handleRegister} text="SIGN UP" />
+          <GradientButton
+            onPress={handleRegister}
+            text="SIGN UP"
+            linearGradientStyle={[Gutters.regularVPadding]}
+            containerStyle={[Gutters.regularTMargin, Gutters.largeBMargin]}
+          />
           <View style={[Layout.center, Gutters.largeTMargin]}>
             <Text style={[Fonts.textSmall, Common.colorslateGray]}>
               Already have an account?{' '}

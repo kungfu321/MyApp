@@ -1,26 +1,49 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react'
-import { View, Text, ImageBackground, TouchableOpacity } from 'react-native'
+import React, { useEffect } from 'react'
+import {
+  View,
+  Text,
+  ImageBackground,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native'
 import { useTheme } from '@/Hooks'
 import { TopBar, GradientButton } from '@/Components'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { Colors } from '@/Theme/Variables'
+
 import LinearGradient from 'react-native-linear-gradient'
 import { navigate } from '@/Navigators/utils'
+import { useLazyFetchOneQuery } from '@/Services/modules/users'
 
-const CandidateContainer = () => {
+interface CandidateContainerProps {
+  userId: string
+}
+
+const CandidateContainer = ({ userId }: CandidateContainerProps) => {
+  const [fetchOne, { data, isSuccess, isLoading, isFetching }] =
+    useLazyFetchOneQuery()
   const { Layout, Common, Fonts, Gutters } = useTheme()
   const handleMoveToUserProfile = () => {
-    navigate('UserProfile', {})
+    navigate('UserProfile', { data })
+  }
+
+  useEffect(() => {
+    fetchOne(userId)
+  }, [fetchOne, userId])
+
+  if (!isSuccess) {
+    return null
   }
 
   return (
     <View style={[Layout.fill]}>
+      {(isLoading || isFetching) && <ActivityIndicator />}
       <ImageBackground
         style={[Layout.fill]}
         source={{
-          uri: 'https://images.unsplash.com/photo-1568409226229-ae13c034d136?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=654&q=80',
+          uri: data?.thumbnail ?? 'https://picsum.photos/200',
         }}
         resizeMode="cover"
       >
@@ -38,7 +61,7 @@ const CandidateContainer = () => {
           <Text
             style={[Fonts.titleRegular, Common.colorwhite, Fonts.fontWeight500]}
           >
-            Helena Smith
+            {data?.name}
           </Text>
           <View
             style={[Layout.row, Layout.alignItemsCenter, Gutters.tinyTMargin]}
@@ -47,7 +70,7 @@ const CandidateContainer = () => {
             <Text
               style={[Fonts.fontWeight600, Fonts.textSmall, Common.colorwhite]}
             >
-              28, Lisbon, Portugal
+              {`${data?.address?.street}, ${data?.address?.state}, ${data?.address?.city}`}
             </Text>
           </View>
           <View style={[Gutters.regularTMargin, Layout.row]}>
@@ -105,3 +128,8 @@ const CandidateContainer = () => {
 }
 
 export default CandidateContainer
+
+CandidateContainer.defaultProps = {
+  // eslint-disable-next-line react/default-props-match-prop-types
+  userId: '62de0cba3e62fd72c381815e',
+}
